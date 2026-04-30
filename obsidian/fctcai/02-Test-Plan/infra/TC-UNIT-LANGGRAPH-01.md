@@ -4,8 +4,9 @@ name: LangGraph graph compilation + conditional edges routing
 layer: unit
 priority: P0
 phases: [P2, ADR-0002]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/strategic-loop/__tests__/langgraph-compile.unit.test.ts
+test_count: 8
 created: 2026-04-30
 estimated_effort_hours: 3
 ---
