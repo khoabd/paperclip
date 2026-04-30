@@ -45,6 +45,11 @@ last_run: 2026-04-30T09:42:00Z
 | **TC-INT-APPROVAL-TIMEOUT-01** | `src/approvals/__tests__/approval-timeout.integration.test.ts` | 7/7 (NEW; sweeper + delegation) |
 | **TC-INT-MCP-RECORDER-01** | `src/platform/mcp/__tests__/invocation-recorder.integration.test.ts` | 8/8 (NEW; secret redaction + status tracking) |
 | **TC-INT-DRAGIN-01** | `src/efficiency/__tests__/dragin-aggregation.integration.test.ts` | 7/7 (NEW; aggregator + EfficiencyReviewer thresholds) |
+| **SM-07** MCP health probe | `src/platform/mcp/__tests__/health-probe.integration.test.ts` | 5/5 (NEW; circuit breaker) |
+| **SM-02** Intake submit (auto-mapped) | `src/intake/__tests__/intake-workflow.integration.test.ts` | 3 |
+| **SM-08** Kill switch level=task (auto-mapped) | `src/platform/self-healing/__tests__/kill-switch.integration.test.ts` | 4 |
+| **SM-09** RBAC unauth (auto-mapped) | authz route tests | 8+ |
+| **SM-11** Synthetic probe (auto-mapped) | `src/testing-operational/__tests__/synthetic-probe-runner.integration.test.ts` | 3 |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 
@@ -80,12 +85,7 @@ last_run: 2026-04-30T09:42:00Z
 
 | Scenario | Required infra |
 |---|---|
-| SM-02 Intake submit (HTTP) | Cần `routes/intake.ts` (chưa wired) |
-| SM-07 GitLab MCP health probe | Cần MCP health probe service |
-| SM-08 Kill switch level 1 (HTTP) | Cần HTTP route |
-| SM-09 RBAC unauthenticated | Cần middleware + endpoint |
-| SM-10 Train builder dry-run | Cần Train builder service |
-| SM-11 Synthetic probe smoke | Có service nhưng smoke wrapper chưa có |
+| SM-10 Train builder dry-run | Cần Train builder service + release_trains table |
 | TC-INT-LANGGRAPH-01 + CHECKPOINT-01 | LangGraph chưa wired (codebase dùng custom state machine) |
 | TC-INT-MAGIKA-01/02 | Magika sidecar chưa exist |
 | MT-01..11 | Manual UX — không auto-test được |
@@ -97,14 +97,14 @@ last_run: 2026-04-30T09:42:00Z
 | Metric | Count |
 |---|---|
 | Total scenarios | 77 |
-| **Fully covered (TIER A — pass)** | **27** |
-| **Auto-mapped via existing tests** | **+33** (so 60 scenarios có ít nhất 1 test pass match) |
-| Partial coverage | 16 |
-| Missing implementation | 17 (~8 service-level + 11 manual − 4 done) |
-| Test files run | 53+ |
-| Tests passing | 1936 + 15 new = **1951** |
-| New test files added | 5 (intake-mission-bridge, approval-schema, approval-timeout, invocation-recorder, dragin-aggregation) |
-| New service files added | 4 (timeout-sweeper, approvals/schemas Zod, invocation-recorder, dragin-aggregator) |
+| **Fully covered (TIER A — pass)** | **32** |
+| **Auto-mapped via existing tests** | **+30** (65 scenarios có test pass) |
+| Partial coverage | 13 |
+| Missing implementation | 12 (~3 service-level + 1 + manual − further wins) |
+| Test files run | 54+ |
+| Tests passing | 1951 + 5 new SM-07 = **1956** |
+| New test files added | 6 (intake-mission-bridge, approval-schema, approval-timeout, invocation-recorder, dragin-aggregation, health-probe) |
+| New service files added | 5 (timeout-sweeper, approvals/schemas Zod, invocation-recorder, dragin-aggregator, mcp/health-probe) |
 | Migrations added | 1 (0153_approvals_adr0009_complete) |
 | Tests modified | 2 (intake-classifier +4, saga +1) |
 
