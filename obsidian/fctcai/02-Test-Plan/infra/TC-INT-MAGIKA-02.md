@@ -4,8 +4,10 @@ name: Magika batch classify 1000 files throughput
 layer: integration
 priority: P2
 phases: [P11, ADR-0004]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/kb/magika/__tests__/file-classifier.test.ts
+test_count: 2 (within classifyBatch describe block — 1000-file mixed sample + anomaly batch)
+note: classifyBatch helper in server/src/kb/magika/file-classifier.ts processes 1000 mixed files (250 each ts/py/md/json) — accuracy ≥95% asserted, throughput ≥100 files/sec asserted. Memory stays bounded because the classifier is pure-TS (no spawn). Real sidecar batch endpoint deferred.
 created: 2026-04-30
 estimated_effort_hours: 4
 ---
