@@ -4,8 +4,9 @@ name: Approval timeout_action mechanics + delegation flow
 layer: integration
 priority: P0
 phases: [P3, ADR-0009]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/approvals/__tests__/approval-timeout.integration.test.ts
+test_count: 7
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

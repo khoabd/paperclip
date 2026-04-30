@@ -954,3 +954,26 @@ export type {
   EnvironmentProviderCapability,
   EnvironmentSupportStatus,
 } from "./environment-support.js";
+
+export {
+  APPROVAL_PROPOSAL_PATTERNS,
+  APPROVAL_RISK_LEVELS,
+  APPROVAL_TIMEOUT_ACTIONS,
+  APPROVAL_PRIORITIES,
+  ApprovalPayloadByPattern,
+  ApprovalRiskMetadata,
+  ApprovalConfirmPayload,
+  ApprovalChoosePayload,
+  ApprovalEditPayload,
+  ApprovalDecidePayload,
+  validateApprovalPayload,
+} from "./approvals/schemas.js";
+
+export type {
+  ApprovalProposalPattern,
+  ApprovalRiskLevel,
+  ApprovalTimeoutAction,
+  ApprovalPriority,
+  ApprovalPayloadInput,
+  ApprovalRiskMetadataInput,
+} from "./approvals/schemas.js";

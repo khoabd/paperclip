@@ -512,6 +512,573 @@
       "when": 1777305216238,
       "tag": "0072_large_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1777305216999,
+      "tag": "0073_sprints_releases",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1777305217999,
+      "tag": "0074_document_embeddings",
+      "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "7",
+      "when": 1777305218999,
+      "tag": "0075_documents_key",
+      "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "7",
+      "when": 1777305219999,
+      "tag": "0076_mcp_servers",
+      "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "7",
+      "when": 1777305220999,
+      "tag": "0077_mcp_tool_invocations",
+      "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "7",
+      "when": 1777305221999,
+      "tag": "0078_entity_embeddings",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "7",
+      "when": 1777305222999,
+      "tag": "0079_capability_registry",
+      "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "7",
+      "when": 1777305223999,
+      "tag": "0080_platform_agents",
+      "breakpoints": true
+    },
+    {
+      "idx": 81,
+      "version": "7",
+      "when": 1777305224999,
+      "tag": "0081_platform_skills",
+      "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "7",
+      "when": 1777305225999,
+      "tag": "0082_skill_versions",
+      "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "7",
+      "when": 1777305226999,
+      "tag": "0083_platform_tools",
+      "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "7",
+      "when": 1777305227999,
+      "tag": "0084_cross_workspace_learning",
+      "breakpoints": true
+    },
+    {
+      "idx": 85,
+      "version": "7",
+      "when": 1777305228999,
+      "tag": "0085_companies_workspace_extensions",
+      "breakpoints": true
+    },
+    {
+      "idx": 86,
+      "version": "7",
+      "when": 1777305229999,
+      "tag": "0086_workspace_capability_overrides",
+      "breakpoints": true
+    },
+    {
+      "idx": 87,
+      "version": "7",
+      "when": 1777305230999,
+      "tag": "0087_workspace_lifecycle_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 88,
+      "version": "7",
+      "when": 1777305231999,
+      "tag": "0088_workspace_skill_pins",
+      "breakpoints": true
+    },
+    {
+      "idx": 89,
+      "version": "7",
+      "when": 1777305232999,
+      "tag": "0089_mission_cost_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 90,
+      "version": "7",
+      "when": 1777305233999,
+      "tag": "0090_cost_anomalies",
+      "breakpoints": true
+    },
+    {
+      "idx": 91,
+      "version": "7",
+      "when": 1777305234999,
+      "tag": "0091_llm_quota_state",
+      "breakpoints": true
+    },
+    {
+      "idx": 92,
+      "version": "7",
+      "when": 1777305235999,
+      "tag": "0092_approvals_pattern_extensions",
+      "breakpoints": true
+    },
+    {
+      "idx": 93,
+      "version": "7",
+      "when": 1777305236999,
+      "tag": "0093_approval_pattern_decisions",
+      "breakpoints": true
+    },
+    {
+      "idx": 94,
+      "version": "7",
+      "when": 1777305237999,
+      "tag": "0094_missions",
+      "breakpoints": true
+    },
+    {
+      "idx": 95,
+      "version": "7",
+      "when": 1777305238999,
+      "tag": "0095_mission_steps",
+      "breakpoints": true
+    },
+    {
+      "idx": 96,
+      "version": "7",
+      "when": 1777305239999,
+      "tag": "0096_mission_reflections",
+      "breakpoints": true
+    },
+    {
+      "idx": 97,
+      "version": "7",
+      "when": 1777305240999,
+      "tag": "0097_mission_state_transitions",
+      "breakpoints": true
+    },
+    {
+      "idx": 98,
+      "version": "7",
+      "when": 1777305241999,
+      "tag": "0098_intake_items",
+      "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "7",
+      "when": 1777305242999,
+      "tag": "0099_intake_workflow_states",
+      "breakpoints": true
+    },
+    {
+      "idx": 100,
+      "version": "7",
+      "when": 1777305243999,
+      "tag": "0100_intake_solutions",
+      "breakpoints": true
+    },
+    {
+      "idx": 101,
+      "version": "7",
+      "when": 1777305244999,
+      "tag": "0101_intake_timeline_estimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 102,
+      "version": "7",
+      "when": 1777305245999,
+      "tag": "0102_intake_outcome_tracker",
+      "breakpoints": true
+    },
+    {
+      "idx": 103,
+      "version": "7",
+      "when": 1777305246999,
+      "tag": "0103_feedback_clusters",
+      "breakpoints": true
+    },
+    {
+      "idx": 104,
+      "version": "7",
+      "when": 1777305247999,
+      "tag": "0104_liveness_heartbeats",
+      "breakpoints": true
+    },
+    {
+      "idx": 105,
+      "version": "7",
+      "when": 1777305248999,
+      "tag": "0105_stuck_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 106,
+      "version": "7",
+      "when": 1777305249999,
+      "tag": "0106_kill_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 107,
+      "version": "7",
+      "when": 1777305250999,
+      "tag": "0107_workflow_health",
+      "breakpoints": true
+    },
+    {
+      "idx": 108,
+      "version": "7",
+      "when": 1777305251999,
+      "tag": "0108_human_drag_in_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 109,
+      "version": "7",
+      "when": 1777305252999,
+      "tag": "0109_design_docs",
+      "breakpoints": true
+    },
+    {
+      "idx": 110,
+      "version": "7",
+      "when": 1777305253999,
+      "tag": "0110_design_doc_revisions",
+      "breakpoints": true
+    },
+    {
+      "idx": 111,
+      "version": "7",
+      "when": 1777305254999,
+      "tag": "0111_component_locks",
+      "breakpoints": true
+    },
+    {
+      "idx": 112,
+      "version": "7",
+      "when": 1777305255999,
+      "tag": "0112_conflict_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 113,
+      "version": "7",
+      "when": 1777305256999,
+      "tag": "0113_feature_flags",
+      "breakpoints": true
+    },
+    {
+      "idx": 114,
+      "version": "7",
+      "when": 1777305257999,
+      "tag": "0114_feature_flag_workspace_overrides",
+      "breakpoints": true
+    },
+    {
+      "idx": 115,
+      "version": "7",
+      "when": 1777305258999,
+      "tag": "0115_canary_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 116,
+      "version": "7",
+      "when": 1777305259999,
+      "tag": "0116_greenfield_intakes",
+      "breakpoints": true
+    },
+    {
+      "idx": 117,
+      "version": "7",
+      "when": 1777305260999,
+      "tag": "0117_greenfield_stages",
+      "breakpoints": true
+    },
+    {
+      "idx": 118,
+      "version": "7",
+      "when": 1777305261999,
+      "tag": "0118_intake_recovery_actions",
+      "breakpoints": true
+    },
+    {
+      "idx": 119,
+      "version": "7",
+      "when": 1777305262999,
+      "tag": "0119_decision_class_lookup",
+      "breakpoints": true
+    },
+    {
+      "idx": 120,
+      "version": "7",
+      "when": 1777305263999,
+      "tag": "0120_decision_log",
+      "breakpoints": true
+    },
+    {
+      "idx": 121,
+      "version": "7",
+      "when": 1777305264999,
+      "tag": "0121_agent_uncertainty_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 122,
+      "version": "7",
+      "when": 1777305265999,
+      "tag": "0122_brier_calibration",
+      "breakpoints": true
+    },
+    {
+      "idx": 123,
+      "version": "7",
+      "when": 1777305266999,
+      "tag": "0123_rejection_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 124,
+      "version": "7",
+      "when": 1777305267999,
+      "tag": "0124_rejection_clusters",
+      "breakpoints": true
+    },
+    {
+      "idx": 125,
+      "version": "7",
+      "when": 1777305268999,
+      "tag": "0125_rejection_taxonomy",
+      "breakpoints": true
+    },
+    {
+      "idx": 126,
+      "version": "7",
+      "when": 1777305269999,
+      "tag": "0126_kb_repositories",
+      "breakpoints": true
+    },
+    {
+      "idx": 127,
+      "version": "7",
+      "when": 1777305270999,
+      "tag": "0127_kb_documents",
+      "breakpoints": true
+    },
+    {
+      "idx": 128,
+      "version": "7",
+      "when": 1777305271999,
+      "tag": "0128_kb_chunks",
+      "breakpoints": true
+    },
+    {
+      "idx": 129,
+      "version": "7",
+      "when": 1777305272999,
+      "tag": "0129_kb_coverage_gaps",
+      "breakpoints": true
+    },
+    {
+      "idx": 130,
+      "version": "7",
+      "when": 1777305273999,
+      "tag": "0130_kb_doc_staleness",
+      "breakpoints": true
+    },
+    {
+      "idx": 131,
+      "version": "7",
+      "when": 1777305274999,
+      "tag": "0131_magika_inventory",
+      "breakpoints": true
+    },
+    {
+      "idx": 132,
+      "version": "7",
+      "when": 1777305275999,
+      "tag": "0132_code_symbols",
+      "breakpoints": true
+    },
+    {
+      "idx": 133,
+      "version": "7",
+      "when": 1777305276999,
+      "tag": "0133_sagas",
+      "breakpoints": true
+    },
+    {
+      "idx": 134,
+      "version": "7",
+      "when": 1777305277999,
+      "tag": "0134_saga_steps",
+      "breakpoints": true
+    },
+    {
+      "idx": 135,
+      "version": "7",
+      "when": 1777305278999,
+      "tag": "0135_contract_versions",
+      "breakpoints": true
+    },
+    {
+      "idx": 136,
+      "version": "7",
+      "when": 1777305279999,
+      "tag": "0136_vector_clocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 137,
+      "version": "7",
+      "when": 1777305280999,
+      "tag": "0137_test_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 138,
+      "version": "7",
+      "when": 1777305281999,
+      "tag": "0138_visual_baselines",
+      "breakpoints": true
+    },
+    {
+      "idx": 139,
+      "version": "7",
+      "when": 1777305282999,
+      "tag": "0139_a11y_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 140,
+      "version": "7",
+      "when": 1777305283999,
+      "tag": "0140_cross_browser_results",
+      "breakpoints": true
+    },
+    {
+      "idx": 141,
+      "version": "7",
+      "when": 1777305284999,
+      "tag": "0141_mobile_test_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 142,
+      "version": "7",
+      "when": 1777305285999,
+      "tag": "0142_cross_device_results",
+      "breakpoints": true
+    },
+    {
+      "idx": 143,
+      "version": "7",
+      "when": 1777305286999,
+      "tag": "0143_i18n_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 144,
+      "version": "7",
+      "when": 1777305287999,
+      "tag": "0144_ux_judge_scores",
+      "breakpoints": true
+    },
+    {
+      "idx": 145,
+      "version": "7",
+      "when": 1777305288999,
+      "tag": "0145_manual_test_cases",
+      "breakpoints": true
+    },
+    {
+      "idx": 146,
+      "version": "7",
+      "when": 1777305289999,
+      "tag": "0146_persona_scenarios",
+      "breakpoints": true
+    },
+    {
+      "idx": 147,
+      "version": "7",
+      "when": 1777305290999,
+      "tag": "0147_synthetic_probe_results",
+      "breakpoints": true
+    },
+    {
+      "idx": 148,
+      "version": "7",
+      "when": 1777305291999,
+      "tag": "0148_fuzz_run_summaries",
+      "breakpoints": true
+    },
+    {
+      "idx": 149,
+      "version": "7",
+      "when": 1777305292999,
+      "tag": "0149_system_health_metrics",
+      "breakpoints": true
+    },
+    {
+      "idx": 150,
+      "version": "7",
+      "when": 1777305293999,
+      "tag": "0150_explain_audit_records",
+      "breakpoints": true
+    },
+    {
+      "idx": 151,
+      "version": "7",
+      "when": 1777305294999,
+      "tag": "0151_migration_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 152,
+      "version": "7",
+      "when": 1777305295999,
+      "tag": "0152_secrets_rotation_audit",
+      "breakpoints": true
+    },
+    {
+      "idx": 153,
+      "version": "7",
+      "when": 1777305296999,
+      "tag": "0153_approvals_adr0009_complete",
+      "breakpoints": true
     }
   ]
 }

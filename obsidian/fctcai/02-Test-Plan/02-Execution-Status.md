@@ -41,6 +41,8 @@ last_run: 2026-04-30T09:42:00Z
 | **TC-UNIT-DECISION-MATRIX-01** | `src/platform/decisions/__tests__/decision-classifier.test.ts` | 30/30 |
 | **TC-INT-CALIBRATION-01** | `src/platform/decisions/__tests__/brier-scorer.integration.test.ts` + decision-log-outcome | 11 |
 | **TC-INT-CAPABILITY-01** | `src/platform/__tests__/platform.integration.test.ts` + skill-library-hash | 11 |
+| **TC-INT-APPROVAL-SCHEMA-01** | `src/approvals/__tests__/approval-schema-adr0009.integration.test.ts` | 9/9 (NEW; ADR-0009 6 cột + Zod) |
+| **TC-INT-APPROVAL-TIMEOUT-01** | `src/approvals/__tests__/approval-timeout.integration.test.ts` | 7/7 (NEW; sweeper + delegation) |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 
@@ -83,7 +85,6 @@ last_run: 2026-04-30T09:42:00Z
 | SM-10 Train builder dry-run | Cần Train builder service |
 | SM-11 Synthetic probe smoke | Có service nhưng smoke wrapper chưa có |
 | TC-INT-LANGGRAPH-01 + CHECKPOINT-01 | LangGraph chưa wired (codebase dùng custom state machine) |
-| TC-INT-APPROVAL-SCHEMA-01 + TIMEOUT-01 | ADR-0009 7 columns missing |
 | TC-INT-MAGIKA-01/02 | Magika sidecar chưa exist |
 | TC-INT-MCP-RECORDER-01 | InvocationRecorder chưa exist |
 | TC-INT-DRAGIN-01 | Drag-in aggregation chưa exist |
@@ -96,13 +97,15 @@ last_run: 2026-04-30T09:42:00Z
 | Metric | Count |
 |---|---|
 | Total scenarios | 77 |
-| **Fully covered (TIER A — pass)** | **23** |
-| **Auto-mapped via existing tests** | **+33** (so 56 scenarios có ít nhất 1 test pass match) |
+| **Fully covered (TIER A — pass)** | **25** |
+| **Auto-mapped via existing tests** | **+33** (so 58 scenarios có ít nhất 1 test pass match) |
 | Partial coverage | 16 |
-| Missing implementation | 21 (~12 service-level + 11 manual) |
-| Test files run | 50+ |
-| Tests passing | 1914 + 6 new = **1920** |
-| New test files added | 1 (intake-mission-bridge) |
+| Missing implementation | 19 (~10 service-level + 11 manual − 2 done) |
+| Test files run | 51+ |
+| Tests passing | 1920 + 16 new ADR-0009 = **1936** |
+| New test files added | 3 (intake-mission-bridge, approval-schema-adr0009, approval-timeout) |
+| New service files added | 2 (timeout-sweeper, approvals/schemas Zod) |
+| Migrations added | 1 (0153_approvals_adr0009_complete) |
 | Tests modified | 2 (intake-classifier +4, saga +1) |
 
 ## Coverage chart

@@ -4,8 +4,9 @@ name: Approvals 11 cột mới — migration backward compat + Zod schemas
 layer: integration
 priority: P0
 phases: [P3, ADR-0009]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/approvals/__tests__/approval-schema-adr0009.integration.test.ts
+test_count: 9
 created: 2026-04-30
 estimated_effort_hours: 6
 ---
