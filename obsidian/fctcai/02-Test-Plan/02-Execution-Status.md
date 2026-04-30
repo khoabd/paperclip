@@ -50,6 +50,7 @@ last_run: 2026-04-30T09:42:00Z
 | **SM-08** Kill switch level=task (auto-mapped) | `src/platform/self-healing/__tests__/kill-switch.integration.test.ts` | 4 |
 | **SM-09** RBAC unauth (auto-mapped) | authz route tests | 8+ |
 | **SM-11** Synthetic probe (auto-mapped) | `src/testing-operational/__tests__/synthetic-probe-runner.integration.test.ts` | 3 |
+| **TC-CP-10** Gate quota auditor | `src/platform/autonomy/__tests__/gate-quota-auditor.integration.test.ts` | 7/7 (NEW; rolling 7d count + recommendation tiers) |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 

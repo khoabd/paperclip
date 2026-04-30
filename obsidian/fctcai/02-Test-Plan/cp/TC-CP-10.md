@@ -4,8 +4,9 @@ name: Gate quota breach triggers auditor review
 layer: integration
 priority: P0
 phases: [P3, P9]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/autonomy/__tests__/gate-quota-auditor.integration.test.ts
+test_count: 7
 created: 2026-04-30
 estimated_effort_hours: 4
 ---
