@@ -4,8 +4,9 @@ name: Hotfix forward-port — cherry-pick conflict escalation
 layer: integration
 priority: P1
 phases: [P13]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/release/__tests__/hotfix-forward-port.integration.test.ts
+test_count: 6
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

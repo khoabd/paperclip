@@ -1079,6 +1079,13 @@
       "when": 1777305296999,
       "tag": "0153_approvals_adr0009_complete",
       "breakpoints": true
+    },
+    {
+      "idx": 154,
+      "version": "7",
+      "when": 1777305297999,
+      "tag": "0154_hotfix_attempts",
+      "breakpoints": true
     }
   ]
 }
