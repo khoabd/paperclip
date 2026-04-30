@@ -4,9 +4,10 @@ name: Kill switch level 4 — emergency-stop-all
 layer: chaos
 priority: P0
 phases: [P6]
-status: partial
-partial_reason: Kill primitive (level=global) covered by kill-switch.integration.test.ts. Full notification dispatcher (PagerDuty/email) + orphan-tracker not yet built.
-test_file: server/src/platform/self-healing/__tests__/kill-switch.integration.test.ts
+status: implemented
+test_file: server/src/platform/self-healing/__tests__/kill-level-4.chaos.test.ts + kill-switch.integration.test.ts
+test_count: 4 (level-4 escalation + orphan tracker) + 4 (kill primitive) = 8
+note: Kill primitive (level=global) covered by kill-switch.integration.test.ts. Notification dispatcher (PagerDuty/email/Slack) and OrphanTracker added in escalation-dispatcher.ts + orphan-tracker.ts. Tests verify fan-out across healthy channels, partial delivery when a channel fails, and orphan flagging on kill sweep.
 created: 2026-04-30
 estimated_effort_hours: 5
 ---
