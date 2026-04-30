@@ -1086,6 +1086,13 @@
       "when": 1777305297999,
       "tag": "0154_hotfix_attempts",
       "breakpoints": true
+    },
+    {
+      "idx": 155,
+      "version": "7",
+      "when": 1777305298999,
+      "tag": "0155_release_trains",
+      "breakpoints": true
     }
   ]
 }
