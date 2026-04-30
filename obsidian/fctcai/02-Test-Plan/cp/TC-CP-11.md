@@ -4,7 +4,10 @@ name: WFQ scheduler fairness — 3 workspaces cạnh tranh agent pool
 layer: integration
 priority: P1
 phases: [P3]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/wfq-scheduler.test.ts
+result: 4/4 pass
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

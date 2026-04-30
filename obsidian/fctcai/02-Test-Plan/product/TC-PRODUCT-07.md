@@ -4,7 +4,8 @@ name: Cross-product regression cascade (shared lib bump)
 layer: chaos
 priority: P1
 phases: [P12, P14a]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 6
 ---

@@ -4,7 +4,10 @@ name: Brier calibration block trust promotion
 layer: integration
 priority: P1
 phases: [P9]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/trust-promotion-guard + brier-scorer
+result: 10 pass
 created: 2026-04-29
 estimated_effort_hours: 3
 ---

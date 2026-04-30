@@ -4,7 +4,8 @@ name: MCP cascade — GitLab MCP down
 layer: chaos
 priority: P0
 phases: [P4, P6, P7]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 6
 ---

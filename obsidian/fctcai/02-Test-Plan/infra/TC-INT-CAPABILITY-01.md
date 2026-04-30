@@ -4,7 +4,10 @@ name: Capability registry routing — match vs mismatch
 layer: integration
 priority: P1
 phases: [P3]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/platform.integration.test.ts + skill-library-hash
+result: 11 pass
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

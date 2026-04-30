@@ -4,7 +4,10 @@ name: Brain-store corruption — vector clock stale
 layer: chaos
 priority: P1
 phases: [P12]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/vector-clock-auditor.integration.test.ts
+result: 11/11 pass
 created: 2026-04-29
 estimated_effort_hours: 5
 ---

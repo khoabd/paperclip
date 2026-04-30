@@ -4,7 +4,8 @@ name: Drag-in self-report aggregation (ADR-0008)
 layer: integration
 priority: P2
 phases: [P3, ADR-0008]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 3
 ---

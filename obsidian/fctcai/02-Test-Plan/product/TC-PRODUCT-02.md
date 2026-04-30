@@ -4,7 +4,8 @@ name: Multi-product (3 workspaces concurrent operation)
 layer: e2e
 priority: P0
 phases: [P3, P4, P12]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 12
 ---

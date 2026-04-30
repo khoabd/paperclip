@@ -4,7 +4,10 @@ name: Decision Boundary 3×3 matrix + uncertainty override
 layer: unit
 priority: P0
 phases: [P9]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/decision-classifier.test.ts
+result: 30/30 pass
 created: 2026-04-30
 estimated_effort_hours: 3
 ---

@@ -4,7 +4,8 @@ name: Per-feature end-to-end — từ intake đến live (12 ngày simulated)
 layer: e2e
 priority: P0
 phases: [P5, P7, P8, P11, P13, P14a]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 10
 ---

@@ -4,7 +4,8 @@ name: Kill switch level 4 — emergency-stop-all
 layer: chaos
 priority: P0
 phases: [P6]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

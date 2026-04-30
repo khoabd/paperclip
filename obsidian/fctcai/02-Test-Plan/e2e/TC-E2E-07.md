@@ -4,7 +4,8 @@ name: PR-driven KB staleness cycle — webhook → diff → update
 layer: e2e
 priority: P1
 phases: [P11]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 8
 ---

@@ -4,7 +4,10 @@ name: Rejection cascade — pattern học và auto-adjust
 layer: e2e
 priority: P1
 phases: [P5, P9, P10]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/rejection-clusterer + dbscan + auto-action
+result: 34 pass
 created: 2026-04-29
 estimated_effort_hours: 6
 ---

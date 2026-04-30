@@ -4,7 +4,8 @@ name: Cost runaway — mission vượt 2x estimate
 layer: chaos
 priority: P0
 phases: [P6]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

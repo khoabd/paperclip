@@ -4,7 +4,10 @@ name: Greenfield 7-stage happy path — idea đến Sprint 1
 layer: integration
 priority: P0
 phases: [P8]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/greenfield-orchestrator.integration.test.ts + state-machine
+result: 67 pass
 created: 2026-04-29
 estimated_effort_hours: 5
 ---

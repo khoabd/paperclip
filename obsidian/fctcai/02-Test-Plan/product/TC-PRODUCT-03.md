@@ -4,7 +4,8 @@ name: Founder absence test (7 ngày, 30 ngày)
 layer: chaos-soak
 priority: P0
 phases: [P3, P6, P9, P15]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 10
 ---

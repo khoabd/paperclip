@@ -4,7 +4,8 @@ name: Daily 24h cycle — các cron job không xung đột
 layer: e2e
 priority: P0
 phases: [P6, P9, P10]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 6
 ---

@@ -4,7 +4,8 @@ name: Weekly Strategic Loop — toàn bộ đến approve sprint
 layer: e2e
 priority: P0
 phases: [P2, P3, P5, P9]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 8
 ---

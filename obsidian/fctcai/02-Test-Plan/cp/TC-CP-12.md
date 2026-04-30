@@ -4,7 +4,10 @@ name: KB cold-start bootstrap pipeline cho brownfield repo
 layer: integration
 priority: P1
 phases: [P11]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/kb-cold-start-bootstrap.integration.test.ts + tree-sitter
+result: 21 pass
 created: 2026-04-30
 estimated_effort_hours: 6
 ---

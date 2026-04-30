@@ -4,7 +4,10 @@ name: Visual regression gate — diff > threshold blocks PR
 layer: integration
 priority: P1
 phases: [P14a]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/visual-baseline-store.integration.test.ts
+result: 4/4 pass
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

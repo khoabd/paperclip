@@ -4,7 +4,8 @@ name: 90-day simulated single-product lifecycle (NORTH STAR)
 layer: e2e-soak
 priority: P0
 phases: [P5, P7, P8, P9, P11, P13, P14a, P15]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 30
 ---

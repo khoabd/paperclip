@@ -4,7 +4,8 @@ name: PostgreSQL checkpointer crash recovery
 layer: integration
 priority: P0
 phases: [P2, ADR-0002]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

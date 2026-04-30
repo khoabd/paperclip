@@ -4,7 +4,8 @@ name: Per-Incident Response — log spike đến auto-rollback
 layer: e2e
 priority: P0
 phases: [P6, P7, P13, P15]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 6
 ---

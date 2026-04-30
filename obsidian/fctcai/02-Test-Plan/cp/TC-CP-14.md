@@ -4,7 +4,10 @@ name: a11y axe-core gate — critical/serious blocks PR
 layer: integration
 priority: P1
 phases: [P14a]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/a11y-violation-collector.integration.test.ts
+result: 3/3 pass
 created: 2026-04-30
 estimated_effort_hours: 3
 ---

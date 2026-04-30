@@ -4,7 +4,10 @@ name: Feature flag canary rollout 0→5→25→50→100%
 layer: integration
 priority: P1
 phases: [P7, P13]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/canary-controller.integration.test.ts
+result: 4/4 pass
 created: 2026-04-29
 estimated_effort_hours: 5
 ---

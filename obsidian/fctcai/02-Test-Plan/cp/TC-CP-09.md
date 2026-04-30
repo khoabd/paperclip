@@ -4,7 +4,10 @@ name: Autonomy Dial auto-promote sau N consecutive approvals
 layer: integration
 priority: P0
 phases: [P3, P9]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/autonomy-gate.test.ts + approval-router
+result: 18 pass
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

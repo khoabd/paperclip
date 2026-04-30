@@ -4,7 +4,10 @@ name: Nightly calibration cron updates calibration_offset correctly
 layer: integration
 priority: P1
 phases: [P9]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/brier-scorer.integration.test.ts
+result: 3/3 pass
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

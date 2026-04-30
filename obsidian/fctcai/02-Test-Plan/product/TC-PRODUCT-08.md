@@ -4,7 +4,8 @@ name: Workspace lifecycle — archive + delete + data cleanup
 layer: e2e
 priority: P2
 phases: [P3, P15]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

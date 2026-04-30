@@ -4,7 +4,10 @@ name: Design doc conflict detection block merge
 layer: integration
 priority: P1
 phases: [P7]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/conflict-detector.test.ts + design-doc-service
+result: 21 pass
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

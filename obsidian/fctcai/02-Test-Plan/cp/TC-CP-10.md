@@ -4,7 +4,8 @@ name: Gate quota breach triggers auditor review
 layer: integration
 priority: P0
 phases: [P3, P9]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

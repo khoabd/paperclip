@@ -4,7 +4,8 @@ name: Magika batch classify 1000 files throughput
 layer: integration
 priority: P2
 phases: [P11, ADR-0004]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

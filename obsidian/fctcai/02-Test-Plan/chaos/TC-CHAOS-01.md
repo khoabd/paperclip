@@ -4,7 +4,10 @@ name: Kill agent mid-mission (Phase 6 kill switch)
 layer: chaos
 priority: P0
 phases: [P6]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/kill-switch.integration.test.ts
+result: 4/4 pass
 created: 2026-04-29
 estimated_effort_hours: 5
 ---

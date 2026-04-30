@@ -4,7 +4,8 @@ name: Product pivot mid-flight (spec change)
 layer: e2e
 priority: P1
 phases: [P4, P7, P11]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-30
 estimated_effort_hours: 8
 ---

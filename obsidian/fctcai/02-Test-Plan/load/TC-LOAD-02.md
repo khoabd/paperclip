@@ -4,7 +4,8 @@ name: 1000 intakes/ngày — triage throughput
 layer: load
 priority: P1
 phases: [P5]
-status: draft
+status: blocked-impl-missing
+blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
 created: 2026-04-29
 estimated_effort_hours: 8
 ---
