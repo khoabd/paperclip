@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "be544c8bccf4bb5d",
+    "type": "split",
+    "children": [
+      {
+        "id": "939a0a13a52527ec",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "386453ec5375742b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "01-Architecture/Implementation-Master-Plan.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Implementation-Master-Plan"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5532391199ed53ee",
+    "type": "split",
+    "children": [
+      {
+        "id": "d1f4e2f8c788939d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3a3e38d83d9927e0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "370d1429d3aeaf88",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "7fb6bbb1d0495315",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "fd223b18bf37b9c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "66df487e19216770",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cd29720ed58f69f9",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "00-Home.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 00-Home"
+            }
+          },
+          {
+            "id": "f78ba1223c00bd2b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "00-Home.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 00-Home"
+            }
+          },
+          {
+            "id": "023672c5946bd221",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "bd0d09512955b80c",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "4f7a804dcb91714b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "00-Home.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 00-Home"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "386453ec5375742b",
+  "lastOpenFiles": [
+    "01-Architecture/Phases/Phase-9-Decision-Boundary-Brier-Calibration.md",
+    "01-Architecture/Phases/Phase-8-Greenfield-Bootstrap.md",
+    "01-Architecture/Phases/Phase-7-Development-Flow-Feature-Flags.md",
+    "01-Architecture/Phases/Phase-6-Self-Healing-Extension.md",
+    "01-Architecture/Phases/Phase-5-Human-Intake-Hub.md",
+    "01-Architecture/Phases/Phase-4-Strategic-Loop-Foundation.md",
+    "01-Architecture/Phases/Phase-3-Autonomy-Dial-Approval-Patterns.md",
+    "01-Architecture/Phases/Phase-2-Platform-Workspace-Mission-Layer.md",
+    "01-Architecture/ADR-0010-MCP-Client-Framework.md",
+    "01-Architecture/Phases/Phase-1-External-Integrations.md",
+    "01-Architecture/ADR-0009-Approvals-Architecture.md",
+    "01-Architecture/Testing-and-Quality-Assessment-Capability.md",
+    "01-Architecture/UX-Strategy-and-Design.md",
+    "01-Architecture/Self-Healing-and-Liveness-Design.md",
+    "01-Architecture/Rejection-Learning-and-Feedback-Loop.md",
+    "01-Architecture/Paperclip-Platform-Workspace-Mission-Model.md",
+    "01-Architecture/Overview.md",
+    "01-Architecture/Magika-Integration-and-Codebase-Triage.md",
+    "01-Architecture/Implementation-Master-Plan.md",
+    "01-Architecture/Human-Intake-and-Solution-Loop-Design.md",
+    "01-Architecture/Phases/Phase-5-Operations-DevOps-Analytics.md",
+    "01-Architecture/Cross-Repo-Coordination-and-Decision-Hardening.md",
+    "01-Architecture/Decision-Boundary-and-Uncertainty-Model.md",
+    "01-Architecture/00-Master-Architecture-Overview.md",
+    "01-Architecture/MASTER-DESIGN.md",
+    "01-Architecture/ADR-0008-Drag-In-Detection.md",
+    "01-Architecture/Phases",
+    "02-Departments",
+    "07-Audits",
+    "06-Knowledge",
+    "05-Meetings",
+    "04-Sprint",
+    "03-Projects",
+    "01-Architecture"
+  ]
+}
