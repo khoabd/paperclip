@@ -53,6 +53,7 @@ last_run: 2026-04-30T09:42:00Z
 | **TC-CP-10** Gate quota auditor | `src/platform/autonomy/__tests__/gate-quota-auditor.integration.test.ts` | 7/7 (NEW; rolling 7d count + recommendation tiers) |
 | **TC-CP-08** Hotfix forward-port | `src/release/__tests__/hotfix-forward-port.integration.test.ts` | 6/6 (NEW; clean / auto-resolve / escalate orchestration) |
 | **TC-UNIT-LANGGRAPH-01** Mission graph compile | `src/platform/strategic-loop/__tests__/langgraph-compile.unit.test.ts` | 8/8 (NEW; 5 nodes + conditional edges + recursion guard) |
+| **TC-INT-CHECKPOINT-01** Crash recovery | `src/platform/strategic-loop/__tests__/checkpointer-recovery.integration.test.ts` | 4/4 (NEW; mid-graph crash + resume + multi-thread isolation) |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 
