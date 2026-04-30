@@ -4,8 +4,9 @@ name: MCP InvocationRecorder + redaction
 layer: integration
 priority: P1
 phases: [P4-MCP, ADR-0010]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/mcp/__tests__/invocation-recorder.integration.test.ts
+test_count: 8
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

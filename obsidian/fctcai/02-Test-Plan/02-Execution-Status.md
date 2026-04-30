@@ -43,6 +43,8 @@ last_run: 2026-04-30T09:42:00Z
 | **TC-INT-CAPABILITY-01** | `src/platform/__tests__/platform.integration.test.ts` + skill-library-hash | 11 |
 | **TC-INT-APPROVAL-SCHEMA-01** | `src/approvals/__tests__/approval-schema-adr0009.integration.test.ts` | 9/9 (NEW; ADR-0009 6 cột + Zod) |
 | **TC-INT-APPROVAL-TIMEOUT-01** | `src/approvals/__tests__/approval-timeout.integration.test.ts` | 7/7 (NEW; sweeper + delegation) |
+| **TC-INT-MCP-RECORDER-01** | `src/platform/mcp/__tests__/invocation-recorder.integration.test.ts` | 8/8 (NEW; secret redaction + status tracking) |
+| **TC-INT-DRAGIN-01** | `src/efficiency/__tests__/dragin-aggregation.integration.test.ts` | 7/7 (NEW; aggregator + EfficiencyReviewer thresholds) |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 
@@ -86,8 +88,6 @@ last_run: 2026-04-30T09:42:00Z
 | SM-11 Synthetic probe smoke | Có service nhưng smoke wrapper chưa có |
 | TC-INT-LANGGRAPH-01 + CHECKPOINT-01 | LangGraph chưa wired (codebase dùng custom state machine) |
 | TC-INT-MAGIKA-01/02 | Magika sidecar chưa exist |
-| TC-INT-MCP-RECORDER-01 | InvocationRecorder chưa exist |
-| TC-INT-DRAGIN-01 | Drag-in aggregation chưa exist |
 | MT-01..11 | Manual UX — không auto-test được |
 
 ---
@@ -97,14 +97,14 @@ last_run: 2026-04-30T09:42:00Z
 | Metric | Count |
 |---|---|
 | Total scenarios | 77 |
-| **Fully covered (TIER A — pass)** | **25** |
-| **Auto-mapped via existing tests** | **+33** (so 58 scenarios có ít nhất 1 test pass match) |
+| **Fully covered (TIER A — pass)** | **27** |
+| **Auto-mapped via existing tests** | **+33** (so 60 scenarios có ít nhất 1 test pass match) |
 | Partial coverage | 16 |
-| Missing implementation | 19 (~10 service-level + 11 manual − 2 done) |
-| Test files run | 51+ |
-| Tests passing | 1920 + 16 new ADR-0009 = **1936** |
-| New test files added | 3 (intake-mission-bridge, approval-schema-adr0009, approval-timeout) |
-| New service files added | 2 (timeout-sweeper, approvals/schemas Zod) |
+| Missing implementation | 17 (~8 service-level + 11 manual − 4 done) |
+| Test files run | 53+ |
+| Tests passing | 1936 + 15 new = **1951** |
+| New test files added | 5 (intake-mission-bridge, approval-schema, approval-timeout, invocation-recorder, dragin-aggregation) |
+| New service files added | 4 (timeout-sweeper, approvals/schemas Zod, invocation-recorder, dragin-aggregator) |
 | Migrations added | 1 (0153_approvals_adr0009_complete) |
 | Tests modified | 2 (intake-classifier +4, saga +1) |
 
