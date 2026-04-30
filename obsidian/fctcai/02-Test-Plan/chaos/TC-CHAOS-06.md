@@ -4,8 +4,10 @@ name: Kill switch level 2 — pause-workspace gracefully
 layer: chaos
 priority: P0
 phases: [P6]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/self-healing/__tests__/kill-switch.integration.test.ts
+test_count: 1
+note: Auto-mapped — "level=workspace blocks all running missions and pauses the workspace" covers the level-2 pause-workspace primitive. Graceful side-effect quiescing needs in-flight tracker (deferred).
 created: 2026-04-30
 estimated_effort_hours: 4
 ---

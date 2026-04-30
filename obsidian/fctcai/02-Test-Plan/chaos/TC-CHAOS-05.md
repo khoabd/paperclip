@@ -4,8 +4,10 @@ name: Deadlock — hai agent chờ nhau
 layer: chaos
 priority: P0
 phases: [P6]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/self-healing/__tests__/watchdog-rules.test.ts
+test_count: 2
+note: Auto-mapped — watchdog-rules.test.ts has "deadlock fires when ctx flag is set". hasWaitingOnCycle cycle-detection needs full graph store (deferred).
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

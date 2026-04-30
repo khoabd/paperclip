@@ -4,8 +4,10 @@ name: Cost runaway — mission vượt 2x estimate
 layer: chaos
 priority: P0
 phases: [P6]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/self-healing/__tests__/watchdog-rules.test.ts
+test_count: 4
+note: Rule logic auto-mapped — watchdog-rules.test.ts covers ratio≥2 + floor $5 boundary. Full E2E pause-snapshot-approval flow needs orchestration harness (deferred).
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

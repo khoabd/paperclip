@@ -4,8 +4,9 @@ name: Kill switch level 4 — emergency-stop-all
 layer: chaos
 priority: P0
 phases: [P6]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: partial
+partial_reason: Kill primitive (level=global) covered by kill-switch.integration.test.ts. Full notification dispatcher (PagerDuty/email) + orphan-tracker not yet built.
+test_file: server/src/platform/self-healing/__tests__/kill-switch.integration.test.ts
 created: 2026-04-30
 estimated_effort_hours: 5
 ---

@@ -4,8 +4,10 @@ name: MCP cascade — GitLab MCP down
 layer: chaos
 priority: P0
 phases: [P4, P6, P7]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/mcp/__tests__/mcp-cascade.chaos.test.ts + health-probe.integration.test.ts
+test_count: 3 (cascade) + 5 (probe baseline) = 8
+note: Circuit breaker + cascade verified at the probe layer. Mission pause-on-MCP-outage flow is wired via existing watchdog rules; full E2E pause+resume needs orchestration harness (deferred).
 created: 2026-04-29
 estimated_effort_hours: 6
 ---

@@ -55,6 +55,10 @@ last_run: 2026-04-30T09:42:00Z
 | **TC-UNIT-LANGGRAPH-01** Mission graph compile | `src/platform/strategic-loop/__tests__/langgraph-compile.unit.test.ts` | 8/8 (NEW; 5 nodes + conditional edges + recursion guard) |
 | **TC-INT-CHECKPOINT-01** Crash recovery | `src/platform/strategic-loop/__tests__/checkpointer-recovery.integration.test.ts` | 4/4 (NEW; mid-graph crash + resume + multi-thread isolation) |
 | **SM-10** Train builder dry-run | `src/release/__tests__/train-builder.integration.test.ts` | 7/7 (NEW; dryRun + grouping by hint/risk + cap-overflow split) |
+| **TC-CHAOS-02** MCP cascade | `src/platform/mcp/__tests__/mcp-cascade.chaos.test.ts` | 3/3 (NEW; circuit breaker prevents stampede, recovery clears error) |
+| **TC-CHAOS-03** Cost runaway (auto-mapped) | `src/platform/self-healing/__tests__/watchdog-rules.test.ts` | 4 |
+| **TC-CHAOS-05** Deadlock (auto-mapped) | `src/platform/self-healing/__tests__/watchdog-rules.test.ts` | 2 |
+| **TC-CHAOS-06** Kill level=workspace (auto-mapped) | `src/platform/self-healing/__tests__/kill-switch.integration.test.ts` | 1 |
 
 ### ✅ COVERED qua existing tests (auto-mapped, không cần thêm)
 
