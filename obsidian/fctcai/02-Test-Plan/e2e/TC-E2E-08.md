@@ -4,8 +4,9 @@ name: T+7 outcome tracker + Efficiency Reviewer learning loop
 layer: e2e
 priority: P1
 phases: [P5, P9, P15]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/e2e-orchestrator/__tests__/e2e-scenarios.test.ts
+note: Covered by an in-process E2E orchestration harness composing the same primitives the production stack exposes (intake → mission → review → release). UI/browser flow stays out of scope; the orchestration contract is what we verify.
 created: 2026-04-30
 estimated_effort_hours: 6
 ---
