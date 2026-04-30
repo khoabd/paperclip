@@ -4,8 +4,9 @@ name: 90-day simulated single-product lifecycle (NORTH STAR)
 layer: e2e-soak
 priority: P0
 phases: [P5, P7, P8, P9, P11, P13, P14a, P15]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/simulator/__tests__/product-lifecycle.simulator.test.ts
+note: Covered by ProductLifecycleSimulator (server/src/platform/simulator/product-lifecycle.ts) which stitches workspaces/missions/gates/brain/budgets/sagas into a deterministic state machine. Real production services remain authoritative; the simulator is the test harness.
 created: 2026-04-30
 estimated_effort_hours: 30
 ---

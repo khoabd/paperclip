@@ -4,8 +4,9 @@ name: Multi-product (3 workspaces concurrent operation)
 layer: e2e
 priority: P0
 phases: [P3, P4, P12]
-status: blocked-impl-missing
-blocked_reason: Service implementation chưa exist (TIER C). Cần impl service trước khi viết test.
+status: implemented
+test_file: server/src/platform/simulator/__tests__/product-lifecycle.simulator.test.ts
+note: Covered by ProductLifecycleSimulator (server/src/platform/simulator/product-lifecycle.ts) which stitches workspaces/missions/gates/brain/budgets/sagas into a deterministic state machine. Real production services remain authoritative; the simulator is the test harness.
 created: 2026-04-30
 estimated_effort_hours: 12
 ---
