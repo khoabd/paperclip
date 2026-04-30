@@ -4,7 +4,10 @@ name: Mission spawn từ intake — bridge integrity
 layer: integration
 priority: P0
 phases: [P5, P2]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/intake/__tests__/intake-mission-bridge.integration.test.ts
+result: 6/6 pass (new file)
 created: 2026-04-29
 estimated_effort_hours: 4
 ---

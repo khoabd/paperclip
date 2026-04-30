@@ -4,7 +4,10 @@ name: Cross-repo saga — atomic deploy và compensation
 layer: integration
 priority: P0
 phases: [P12]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/cross-repo/__tests__/saga-orchestrator.integration.test.ts
+result: 4/4 pass (added 3-repo TC-CP-07 case)
 created: 2026-04-29
 estimated_effort_hours: 5
 ---

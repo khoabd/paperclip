@@ -4,7 +4,10 @@ name: Intake type classification toàn bộ 8 loại
 layer: unit
 priority: P1
 phases: [P5]
-status: draft
+status: implemented
+implemented_at: 2026-04-30
+test_file: server/src/intake/__tests__/intake-classifier.test.ts
+result: 12/12 pass (added 8-type explicit + 'problem' cases)
 created: 2026-04-29
 estimated_effort_hours: 3
 ---
