@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, timestamp, boolean, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, integer, numeric, timestamp, boolean, uniqueIndex, index } from "drizzle-orm/pg-core";
 
 export const companies = pgTable(
   "companies",
@@ -23,10 +23,19 @@ export const companies = pgTable(
     feedbackDataSharingConsentByUserId: text("feedback_data_sharing_consent_by_user_id"),
     feedbackDataSharingTermsVersion: text("feedback_data_sharing_terms_version"),
     brandColor: text("brand_color"),
+    autonomyLevel: text("autonomy_level").notNull().default("sandbox"),
+    wfqWeight: integer("wfq_weight").notNull().default(100),
+    costBudgetUsdPerWeek: numeric("cost_budget_usd_per_week", { precision: 12, scale: 4 })
+      .notNull()
+      .default("0"),
+    ragNamespace: text("rag_namespace"),
+    vaultPath: text("vault_path"),
+    pgSchema: text("pg_schema"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     issuePrefixUniqueIdx: uniqueIndex("companies_issue_prefix_idx").on(table.issuePrefix),
+    autonomyLevelIdx: index("companies_autonomy_level_idx").on(table.autonomyLevel),
   }),
 );

@@ -266,6 +266,7 @@ export async function startServer(): Promise<StartedServer> {
   let embeddedPostgresStartedByThisProcess = false;
   let migrationSummary: MigrationSummary = "skipped";
   let activeDatabaseConnectionString: string;
+  let migrationProbeConnectionString: string;
   let resolvedEmbeddedPostgresPort: number | null = null;
   let startupDbInfo:
     | { mode: "external-postgres"; connectionString: string }
@@ -278,6 +279,7 @@ export async function startServer(): Promise<StartedServer> {
     pluginMigrationDb = config.databaseMigrationUrl ? createDb(config.databaseMigrationUrl) : db;
     logger.info("Using external PostgreSQL via DATABASE_URL/config");
     activeDatabaseConnectionString = config.databaseUrl;
+    migrationProbeConnectionString = migrationUrl;
     startupDbInfo = { mode: "external-postgres", connectionString: config.databaseUrl };
   } else {
     const moduleName = "embedded-postgres";
@@ -440,6 +442,7 @@ export async function startServer(): Promise<StartedServer> {
     pluginMigrationDb = db;
     logger.info("Embedded PostgreSQL ready");
     activeDatabaseConnectionString = embeddedConnectionString;
+    migrationProbeConnectionString = embeddedConnectionString;
     resolvedEmbeddedPostgresPort = port;
     startupDbInfo = { mode: "embedded-postgres", dataDir, port };
   }
@@ -593,6 +596,14 @@ export async function startServer(): Promise<StartedServer> {
     }
   };
   const pluginWorkerManager = createPluginWorkerManager();
+  const inspectMigrationState = async () => inspectMigrations(migrationProbeConnectionString);
+  const probeAuthSession = async () => {
+    if (config.deploymentMode !== "authenticated") return;
+    if (!resolveSessionFromHeaders) {
+      throw new Error("session_resolver_unavailable");
+    }
+    await resolveSessionFromHeaders(new Headers());
+  };
   const app = await createApp(db as any, {
     uiMode,
     serverPort: listenPort,
@@ -613,6 +624,9 @@ export async function startServer(): Promise<StartedServer> {
     bindHost: config.host,
     authReady,
     companyDeletionEnabled: config.companyDeletionEnabled,
+    migrationSummary,
+    inspectMigrationState,
+    probeAuthSession,
     pluginMigrationDb: pluginMigrationDb as any,
     betterAuthHandler,
     resolveSession,

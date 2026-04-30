@@ -4,6 +4,7 @@ const BOARD_ROUTE_ROOTS = new Set([
   "company",
   "skills",
   "org",
+  "console",
   "agents",
   "projects",
   "workspaces",

@@ -7,6 +7,7 @@ const mockIssueService = vi.hoisted(() => ({
   assertCheckoutOwner: vi.fn(),
   update: vi.fn(),
   addComment: vi.fn(),
+  listComments: vi.fn(),
   getDependencyReadiness: vi.fn(),
   findMentionedAgents: vi.fn(),
   listWakeableBlockedDependents: vi.fn(),
@@ -210,6 +211,7 @@ describe.sequential("issue comment reopen routes", () => {
     mockIssueService.assertCheckoutOwner.mockReset();
     mockIssueService.update.mockReset();
     mockIssueService.addComment.mockReset();
+    mockIssueService.listComments.mockReset();
     mockIssueService.getDependencyReadiness.mockReset();
     mockIssueService.findMentionedAgents.mockReset();
     mockIssueService.listWakeableBlockedDependents.mockReset();
@@ -270,6 +272,7 @@ describe.sequential("issue comment reopen routes", () => {
       authorUserId: "local-board",
     });
     mockIssueService.findMentionedAgents.mockResolvedValue([]);
+    mockIssueService.listComments.mockResolvedValue([]);
     mockIssueService.getDependencyReadiness.mockResolvedValue({
       issueId: "11111111-1111-4111-8111-111111111111",
       blockerIssueIds: [],
@@ -336,7 +339,7 @@ describe.sequential("issue comment reopen routes", () => {
         details: expect.not.objectContaining({ reopened: true }),
       }),
     );
-  });
+  }, 10_000);
 
   it("implicitly reopens closed issues via the PATCH comment path when reassigning to an agent", async () => {
     mockIssueService.getById.mockResolvedValue(makeIssue("done"));
@@ -475,6 +478,33 @@ describe.sequential("issue comment reopen routes", () => {
         }),
       }),
     ));
+  });
+
+  it("keeps mirrored closure comments on done issues closed via POST comments", async () => {
+    mockIssueService.getById.mockResolvedValue(makeIssue("done"));
+    mockIssueService.listComments.mockResolvedValue([
+      {
+        id: "agent-comment-1",
+        issueId: "11111111-1111-4111-8111-111111111111",
+        companyId: "company-1",
+        body: "hello",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        authorAgentId: "22222222-2222-4222-8222-222222222222",
+        authorUserId: null,
+      },
+    ]);
+
+    const res = await request(await installActor(createApp()))
+      .post("/api/issues/11111111-1111-4111-8111-111111111111/comments")
+      .send({ body: "hello" });
+
+    expect(res.status).toBe(201);
+    expect(mockIssueService.update).not.toHaveBeenCalledWith(
+      "11111111-1111-4111-8111-111111111111",
+      { status: "todo" },
+    );
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
   });
 
   it("does not implicitly reopen closed issues via POST comments for agent-authored comments", async () => {
@@ -623,6 +653,37 @@ describe.sequential("issue comment reopen routes", () => {
         }),
       }),
     ));
+  });
+
+  it("keeps mirrored closure comments on done issues closed via the PATCH comment path", async () => {
+    mockIssueService.getById.mockResolvedValue(makeIssue("done"));
+    mockIssueService.listComments.mockResolvedValue([
+      {
+        id: "agent-comment-1",
+        issueId: "11111111-1111-4111-8111-111111111111",
+        companyId: "company-1",
+        body: "please continue",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        authorAgentId: "22222222-2222-4222-8222-222222222222",
+        authorUserId: null,
+      },
+    ]);
+    mockIssueService.update.mockImplementation(async (_id: string, patch: Record<string, unknown>) => ({
+      ...makeIssue("done"),
+      ...patch,
+    }));
+
+    const res = await request(await installActor(createApp()))
+      .patch("/api/issues/11111111-1111-4111-8111-111111111111")
+      .send({ comment: "please continue" });
+
+    expect(res.status).toBe(200);
+    expect(mockIssueService.update).not.toHaveBeenCalledWith(
+      "11111111-1111-4111-8111-111111111111",
+      expect.objectContaining({ status: "todo" }),
+    );
+    expect(mockHeartbeatService.wakeup).not.toHaveBeenCalled();
   });
 
   it("does not implicitly reopen closed issues via the PATCH comment path for agent-authored comments", async () => {

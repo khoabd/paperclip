@@ -70,6 +70,7 @@ import {
   SVG_CONTENT_TYPE,
 } from "../attachment-types.js";
 import { queueIssueAssignmentWakeup } from "../services/issue-assignment-wakeup.js";
+import { getOrchestrator } from "../workflows/registry.js";
 import { assertEnvironmentSelectionForCompany } from "./environment-selection.js";
 import { executionWorkspaceService as executionWorkspaceServiceDirect } from "../services/execution-workspaces.js";
 import { feedbackService } from "../services/feedback.js";
@@ -197,6 +198,37 @@ function shouldImplicitlyMoveCommentedIssueToTodo(input: {
   if (!isClosedIssueStatus(input.issueStatus) && input.issueStatus !== "blocked") return false;
   if (typeof input.assigneeAgentId !== "string" || input.assigneeAgentId.length === 0) return false;
   return true;
+}
+
+function normalizeCommentBodyForReopenDedupe(body: string) {
+  return body.replace(/\s+/g, " ").trim();
+}
+
+async function shouldSuppressImplicitReopenForMirroredClosureComment(input: {
+  svc: ReturnType<typeof issueService>;
+  issueId: string;
+  issueStatus: string | null | undefined;
+  assigneeAgentId: string | null | undefined;
+  actorType: "agent" | "user";
+  body: string;
+  explicitMoveToTodoRequested: boolean;
+}) {
+  if (input.actorType !== "user") return false;
+  if (input.explicitMoveToTodoRequested) return false;
+  if (!isClosedIssueStatus(input.issueStatus)) return false;
+  if (typeof input.assigneeAgentId !== "string" || input.assigneeAgentId.length === 0) return false;
+
+  const incomingBody = normalizeCommentBodyForReopenDedupe(input.body);
+  if (!incomingBody) return false;
+
+  const latestComments = await input.svc.listComments(input.issueId, {
+    order: "desc",
+    limit: 25,
+  });
+  const latestAssigneeComment = latestComments.find((comment) => comment.authorAgentId === input.assigneeAgentId);
+  if (!latestAssigneeComment) return false;
+  const latestAssigneeBody = normalizeCommentBodyForReopenDedupe(latestAssigneeComment.body);
+  return Boolean(latestAssigneeBody) && latestAssigneeBody === incomingBody;
 }
 
 function isExplicitResumeCapableStatus(status: string | null | undefined) {
@@ -1815,6 +1847,11 @@ export function issueRoutes(
       requestedByActorId: actor.actorId,
     });
 
+    // Fire-and-forget: auto-assign if no assignee provided
+    if (!issue.assigneeAgentId && !issue.assigneeUserId) {
+      getOrchestrator()?.triggerForIssue(issue.id, companyId);
+    }
+
     res.status(201).json({
       ...issue,
       relatedWork: referenceSummary,
@@ -1925,15 +1962,26 @@ export function issueRoutes(
     const requestedAssigneeAgentId =
       normalizedAssigneeAgentId === undefined ? existing.assigneeAgentId : normalizedAssigneeAgentId;
     const explicitMoveToTodoRequested = reopenRequested || resumeRequested === true;
+    const implicitMoveToTodoRequested = Boolean(commentBody) &&
+      shouldImplicitlyMoveCommentedIssueToTodo({
+        issueStatus: existing.status,
+        assigneeAgentId: requestedAssigneeAgentId,
+        actorType: actor.actorType,
+        actorId: actor.actorId,
+      });
+    const suppressImplicitMoveToTodoRequested = implicitMoveToTodoRequested &&
+      await shouldSuppressImplicitReopenForMirroredClosureComment({
+        svc,
+        issueId: existing.id,
+        issueStatus: existing.status,
+        assigneeAgentId: requestedAssigneeAgentId,
+        actorType: actor.actorType,
+        body: commentBody ?? "",
+        explicitMoveToTodoRequested,
+      });
     const effectiveMoveToTodoRequested =
       explicitMoveToTodoRequested ||
-      (!!commentBody &&
-        shouldImplicitlyMoveCommentedIssueToTodo({
-          issueStatus: existing.status,
-          assigneeAgentId: requestedAssigneeAgentId,
-          actorType: actor.actorType,
-          actorId: actor.actorId,
-        }));
+      (implicitMoveToTodoRequested && !suppressImplicitMoveToTodoRequested);
     const updateReferenceSummaryBefore = titleOrDescriptionChanged
       ? await issueReferencesSvc.listIssueReferenceSummary(existing.id)
       : null;
@@ -3330,14 +3378,25 @@ export function issueRoutes(
     const isClosed = isClosedIssueStatus(issue.status);
     const isBlocked = issue.status === "blocked";
     const explicitMoveToTodoRequested = reopenRequested || resumeRequested === true;
-    const effectiveMoveToTodoRequested =
-      explicitMoveToTodoRequested ||
-      shouldImplicitlyMoveCommentedIssueToTodo({
+    const implicitMoveToTodoRequested = shouldImplicitlyMoveCommentedIssueToTodo({
+      issueStatus: issue.status,
+      assigneeAgentId: issue.assigneeAgentId,
+      actorType: actor.actorType,
+      actorId: actor.actorId,
+    });
+    const suppressImplicitMoveToTodoRequested = implicitMoveToTodoRequested &&
+      await shouldSuppressImplicitReopenForMirroredClosureComment({
+        svc,
+        issueId: issue.id,
         issueStatus: issue.status,
         assigneeAgentId: issue.assigneeAgentId,
         actorType: actor.actorType,
-        actorId: actor.actorId,
+        body: req.body.body,
+        explicitMoveToTodoRequested,
       });
+    const effectiveMoveToTodoRequested =
+      explicitMoveToTodoRequested ||
+      (implicitMoveToTodoRequested && !suppressImplicitMoveToTodoRequested);
     const hasUnresolvedFirstClassBlockers =
       isBlocked && effectiveMoveToTodoRequested
         ? (await svc.getDependencyReadiness(issue.id)).unresolvedBlockerCount > 0

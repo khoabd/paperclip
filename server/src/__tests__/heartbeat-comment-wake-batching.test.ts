@@ -462,6 +462,300 @@ describe("heartbeat comment wake batching", () => {
     }
   }, 120_000);
 
+  it("skips mirrored duplicate user comments for the assignee within one heartbeat interval", async () => {
+    const companyId = randomUUID();
+    const agentId = randomUUID();
+    const issueId = randomUUID();
+    const issuePrefix = `T${companyId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
+    const heartbeat = heartbeatService(db);
+
+    await db.insert(companies).values({
+      id: companyId,
+      name: "Paperclip",
+      issuePrefix,
+      requireBoardApprovalForNewAgents: false,
+    });
+
+    await db.insert(agents).values({
+      id: agentId,
+      companyId,
+      name: "Health Monitor",
+      role: "devops",
+      status: "idle",
+      adapterType: "process",
+      adapterConfig: { command: "echo", args: ["ok"] },
+      runtimeConfig: {
+        heartbeat: {
+          enabled: true,
+          intervalSec: 900,
+          wakeOnDemand: true,
+        },
+      },
+      permissions: {},
+    });
+
+    await db.insert(issues).values({
+      id: issueId,
+      companyId,
+      title: "Production Health Monitor",
+      status: "todo",
+      priority: "high",
+      assigneeAgentId: agentId,
+      issueNumber: 1,
+      identifier: `${issuePrefix}-1`,
+    });
+
+    await db.insert(issueComments).values({
+      companyId,
+      issueId,
+      authorUserId: "local-board",
+      body: "## Production Health Check\nAll systems healthy.",
+    });
+
+    const mirroredComment = await db
+      .insert(issueComments)
+      .values({
+        companyId,
+        issueId,
+        authorUserId: "local-board",
+        body: "## Production Health Check\nAll systems healthy.",
+      })
+      .returning()
+      .then((rows) => rows[0]!);
+
+    const run = await heartbeat.wakeup(agentId, {
+      source: "automation",
+      triggerDetail: "system",
+      reason: "issue_commented",
+      payload: {
+        issueId,
+        commentId: mirroredComment.id,
+      },
+      contextSnapshot: {
+        issueId,
+        taskId: issueId,
+        commentId: mirroredComment.id,
+        wakeCommentId: mirroredComment.id,
+        wakeReason: "issue_commented",
+        source: "issue.comment",
+      },
+      requestedByActorType: "user",
+      requestedByActorId: "local-board",
+    });
+
+    expect(run).toBeNull();
+
+    const wakeRequests = await db
+      .select()
+      .from(agentWakeupRequests)
+      .where(and(eq(agentWakeupRequests.companyId, companyId), eq(agentWakeupRequests.agentId, agentId)));
+
+    expect(wakeRequests).toHaveLength(1);
+    expect(wakeRequests[0]?.status).toBe("skipped");
+    expect(wakeRequests[0]?.reason).toBe("issue_commented.mirrored_duplicate");
+
+    const runs = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.agentId, agentId));
+    expect(runs).toHaveLength(0);
+  });
+
+  it("skips user comments mirrored from the assignee's own run", async () => {
+    const companyId = randomUUID();
+    const agentId = randomUUID();
+    const issueId = randomUUID();
+    const sourceRunId = randomUUID();
+    const issuePrefix = `T${companyId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
+    const heartbeat = heartbeatService(db);
+
+    await db.insert(companies).values({
+      id: companyId,
+      name: "Paperclip",
+      issuePrefix,
+      requireBoardApprovalForNewAgents: false,
+    });
+
+    await db.insert(agents).values({
+      id: agentId,
+      companyId,
+      name: "DevOps",
+      role: "devops",
+      status: "idle",
+      adapterType: "process",
+      adapterConfig: { command: "echo", args: ["ok"] },
+      runtimeConfig: {},
+      permissions: {},
+    });
+
+    await db.insert(issues).values({
+      id: issueId,
+      companyId,
+      title: "Incident Response",
+      status: "blocked",
+      priority: "high",
+      assigneeAgentId: agentId,
+      issueNumber: 1,
+      identifier: `${issuePrefix}-1`,
+    });
+
+    await db.insert(heartbeatRuns).values({
+      id: sourceRunId,
+      companyId,
+      agentId,
+      invocationSource: "automation",
+      triggerDetail: "system",
+      status: "succeeded",
+      contextSnapshot: {
+        issueId,
+        taskId: issueId,
+        wakeReason: "issue_commented",
+      },
+    });
+
+    const mirroredComment = await db
+      .insert(issueComments)
+      .values({
+        companyId,
+        issueId,
+        authorUserId: "local-board",
+        createdByRunId: sourceRunId,
+        body: "Heartbeat update (2026-04-28 19:27 ICT)\n\n- No active incidents.\n- Continuing scan.",
+      })
+      .returning()
+      .then((rows) => rows[0]!);
+
+    const run = await heartbeat.wakeup(agentId, {
+      source: "automation",
+      triggerDetail: "system",
+      reason: "issue_commented",
+      payload: {
+        issueId,
+        commentId: mirroredComment.id,
+      },
+      contextSnapshot: {
+        issueId,
+        taskId: issueId,
+        commentId: mirroredComment.id,
+        wakeCommentId: mirroredComment.id,
+        wakeReason: "issue_commented",
+        source: "issue.comment",
+      },
+      requestedByActorType: "user",
+      requestedByActorId: "local-board",
+    });
+
+    expect(run).toBeNull();
+
+    const wakeRequests = await db
+      .select()
+      .from(agentWakeupRequests)
+      .where(and(eq(agentWakeupRequests.companyId, companyId), eq(agentWakeupRequests.agentId, agentId)))
+      .orderBy(asc(agentWakeupRequests.createdAt));
+
+    expect(wakeRequests).toHaveLength(1);
+    expect(wakeRequests[0]?.status).toBe("skipped");
+    expect(wakeRequests[0]?.reason).toBe("issue_commented.mirrored_duplicate");
+
+    const runs = await db
+      .select()
+      .from(heartbeatRuns)
+      .where(and(eq(heartbeatRuns.companyId, companyId), eq(heartbeatRuns.agentId, agentId)))
+      .orderBy(asc(heartbeatRuns.createdAt));
+
+    expect(runs).toHaveLength(1);
+    expect(runs[0]?.id).toBe(sourceRunId);
+  });
+
+  it("skips delayed mirrored assignee closure comments even outside the heartbeat dedupe window", async () => {
+    const companyId = randomUUID();
+    const agentId = randomUUID();
+    const issueId = randomUUID();
+    const issuePrefix = `T${companyId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
+    const heartbeat = heartbeatService(db);
+    const createdAtBase = new Date("2026-04-28T12:00:00.000Z");
+
+    await db.insert(companies).values({
+      id: companyId,
+      name: "Paperclip",
+      issuePrefix,
+      requireBoardApprovalForNewAgents: false,
+    });
+
+    await db.insert(agents).values({
+      id: agentId,
+      companyId,
+      name: "DevOps",
+      role: "devops",
+      status: "idle",
+      adapterType: "process",
+      adapterConfig: { command: "echo", args: ["ok"] },
+      runtimeConfig: { heartbeat: { intervalSec: 30 } },
+      permissions: {},
+    });
+
+    await db.insert(issues).values({
+      id: issueId,
+      companyId,
+      title: "Delayed mirror dedupe",
+      status: "done",
+      priority: "medium",
+      assigneeAgentId: agentId,
+      issueNumber: 1,
+      identifier: `${issuePrefix}-1`,
+    });
+
+    await db.insert(issueComments).values({
+      companyId,
+      issueId,
+      authorAgentId: agentId,
+      body: "Final closure summary",
+      createdAt: createdAtBase,
+      updatedAt: createdAtBase,
+    });
+
+    const mirroredComment = await db
+      .insert(issueComments)
+      .values({
+        companyId,
+        issueId,
+        authorUserId: "local-board",
+        body: "Final closure summary",
+        createdAt: new Date("2026-04-28T13:45:00.000Z"),
+        updatedAt: new Date("2026-04-28T13:45:00.000Z"),
+      })
+      .returning()
+      .then((rows) => rows[0]!);
+
+    const run = await heartbeat.wakeup(agentId, {
+      source: "automation",
+      triggerDetail: "system",
+      reason: "issue_commented",
+      payload: {
+        issueId,
+        commentId: mirroredComment.id,
+      },
+      contextSnapshot: {
+        issueId,
+        taskId: issueId,
+        commentId: mirroredComment.id,
+        wakeCommentId: mirroredComment.id,
+        wakeReason: "issue_commented",
+        source: "issue.comment",
+      },
+      requestedByActorType: "user",
+      requestedByActorId: "local-board",
+    });
+
+    expect(run).toBeNull();
+
+    const wakeRequests = await db
+      .select()
+      .from(agentWakeupRequests)
+      .where(and(eq(agentWakeupRequests.companyId, companyId), eq(agentWakeupRequests.agentId, agentId)));
+
+    expect(wakeRequests).toHaveLength(1);
+    expect(wakeRequests[0]?.status).toBe("skipped");
+    expect(wakeRequests[0]?.reason).toBe("issue_commented.mirrored_duplicate");
+  });
+
   it("promotes deferred comment wakes with their comments after the active run is cancelled", async () => {
     const gateway = await createControlledGatewayServer();
     const companyId = randomUUID();
@@ -974,6 +1268,206 @@ describe("heartbeat comment wake batching", () => {
             id: issueId,
             identifier: `${issuePrefix}-1`,
             title: "Do not reopen from agent mention",
+            status: "done",
+            priority: "medium",
+          },
+        },
+      });
+      expect(String(secondPayload.message ?? "")).toContain("please review after I finish");
+    } finally {
+      gateway.releaseFirstWait();
+      await gateway.close();
+    }
+  }, 120_000);
+
+  it("does not reopen a finished issue for deferred user mention wakes mirrored from the assignee run", async () => {
+    const gateway = await createControlledGatewayServer();
+    const companyId = randomUUID();
+    const assigneeAgentId = randomUUID();
+    const mentionedAgentId = randomUUID();
+    const issueId = randomUUID();
+    const issuePrefix = `T${companyId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
+    const heartbeat = heartbeatService(db);
+
+    try {
+      await db.insert(companies).values({
+        id: companyId,
+        name: "Paperclip",
+        issuePrefix,
+        requireBoardApprovalForNewAgents: false,
+      });
+
+      await db.insert(agents).values([
+        {
+          id: assigneeAgentId,
+          companyId,
+          name: "Primary Agent",
+          role: "engineer",
+          status: "idle",
+          adapterType: "openclaw_gateway",
+          adapterConfig: {
+            url: gateway.url,
+            headers: {
+              "x-openclaw-token": "gateway-token",
+            },
+            payloadTemplate: {
+              message: "wake now",
+            },
+            waitTimeoutMs: 2_000,
+          },
+          runtimeConfig: {},
+          permissions: {},
+        },
+        {
+          id: mentionedAgentId,
+          companyId,
+          name: "Mentioned Agent",
+          role: "engineer",
+          status: "idle",
+          adapterType: "openclaw_gateway",
+          adapterConfig: {
+            url: gateway.url,
+            headers: {
+              "x-openclaw-token": "gateway-token",
+            },
+            payloadTemplate: {
+              message: "wake now",
+            },
+            waitTimeoutMs: 2_000,
+          },
+          runtimeConfig: {},
+          permissions: {},
+        },
+      ]);
+
+      await db.insert(issues).values({
+        id: issueId,
+        companyId,
+        title: "Do not reopen from mirrored mention",
+        status: "todo",
+        priority: "medium",
+        assigneeAgentId,
+        issueNumber: 1,
+        identifier: `${issuePrefix}-1`,
+      });
+
+      const firstRun = await heartbeat.wakeup(assigneeAgentId, {
+        source: "assignment",
+        triggerDetail: "system",
+        reason: "issue_assigned",
+        payload: { issueId },
+        contextSnapshot: {
+          issueId,
+          taskId: issueId,
+          wakeReason: "issue_assigned",
+        },
+        requestedByActorType: "system",
+        requestedByActorId: null,
+      });
+
+      expect(firstRun).not.toBeNull();
+      await waitFor(async () => {
+        const run = await db
+          .select({ status: heartbeatRuns.status })
+          .from(heartbeatRuns)
+          .where(eq(heartbeatRuns.id, firstRun!.id))
+          .then((rows) => rows[0] ?? null);
+        return run?.status === "running";
+      });
+
+      const mirroredComment = await db
+        .insert(issueComments)
+        .values({
+          companyId,
+          issueId,
+          authorUserId: "local-board",
+          createdByRunId: firstRun?.id ?? null,
+          body: "@Mentioned Agent please review after I finish",
+        })
+        .returning()
+        .then((rows) => rows[0]);
+
+      const deferredRun = await heartbeat.wakeup(mentionedAgentId, {
+        source: "automation",
+        triggerDetail: "system",
+        reason: "issue_comment_mentioned",
+        payload: { issueId, commentId: mirroredComment.id },
+        contextSnapshot: {
+          issueId,
+          taskId: issueId,
+          commentId: mirroredComment.id,
+          wakeCommentId: mirroredComment.id,
+          wakeReason: "issue_comment_mentioned",
+          source: "comment.mention",
+        },
+        requestedByActorType: "user",
+        requestedByActorId: "local-board",
+      });
+
+      expect(deferredRun).toBeNull();
+
+      await waitFor(async () => {
+        const deferred = await db
+          .select()
+          .from(agentWakeupRequests)
+          .where(
+            and(
+              eq(agentWakeupRequests.companyId, companyId),
+              eq(agentWakeupRequests.agentId, mentionedAgentId),
+              eq(agentWakeupRequests.status, "deferred_issue_execution"),
+            ),
+          )
+          .then((rows) => rows[0] ?? null);
+        return Boolean(deferred);
+      });
+
+      await db
+        .update(issues)
+        .set({
+          status: "done",
+          completedAt: new Date(),
+          executionRunId: null,
+          executionAgentNameKey: null,
+          executionLockedAt: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(issues.id, issueId));
+
+      gateway.releaseFirstWait();
+
+      await waitFor(() => gateway.getAgentPayloads().length === 2, 90_000);
+      await waitFor(async () => {
+        const runs = await db
+          .select()
+          .from(heartbeatRuns)
+          .where(eq(heartbeatRuns.companyId, companyId));
+        return runs.length === 2 && runs.every((run) => run.status === "succeeded");
+      }, 90_000);
+
+      const issueAfterPromotion = await db
+        .select({
+          status: issues.status,
+          completedAt: issues.completedAt,
+        })
+        .from(issues)
+        .where(eq(issues.id, issueId))
+        .then((rows) => rows[0] ?? null);
+
+      expect(issueAfterPromotion).toMatchObject({
+        status: "done",
+      });
+      expect(issueAfterPromotion?.completedAt).not.toBeNull();
+
+      const secondPayload = gateway.getAgentPayloads()[1] ?? {};
+      expect(secondPayload.paperclip).toMatchObject({
+        wake: {
+          reason: "issue_comment_mentioned",
+          commentIds: [mirroredComment.id],
+          latestCommentId: mirroredComment.id,
+          issue: {
+            id: issueId,
+            identifier: `${issuePrefix}-1`,
+            title: "Do not reopen from mirrored mention",
             status: "done",
             priority: "medium",
           },

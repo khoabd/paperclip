@@ -400,6 +400,36 @@ Expected:
 - `/api/health` returns `{"status":"ok"}`
 - `/api/companies` returns a JSON array
 
+### Post-Deploy Smoke Signals (`/api/health/smoke`)
+
+For machine-driven post-deploy validation (for example, ATO-8 heartbeats), use:
+
+```sh
+# Requires board session or agent auth in authenticated mode.
+curl -H "Authorization: Bearer <agent-or-board-token>" \
+  http://localhost:3100/api/health/smoke
+```
+
+Response shape (abridged):
+
+```json
+{
+  "status": "ok",
+  "deploymentMode": "authenticated",
+  "checks": {
+    "auth": { "status": "pass|fail", "...": "..." },
+    "migrations": { "status": "pass|fail", "...": "..." }
+  }
+}
+```
+
+Pass/fail criteria:
+
+- `checks.auth.status=pass` means auth stack is initialized and the session resolver probe completed without error.
+- `checks.auth.status=fail` means auth is not ready or the resolver probe threw.
+- `checks.migrations.status=pass` means migration state is up to date at probe time.
+- `checks.migrations.status=fail` means pending migrations were detected (or the migration probe failed).
+
 ## Reset Local Dev Database
 
 To wipe local dev data and start fresh:

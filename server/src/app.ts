@@ -2,7 +2,7 @@ import express, { Router, type Request as ExpressRequest } from "express";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { Db } from "@paperclipai/db";
+import type { Db, MigrationState } from "@paperclipai/db";
 import type { DeploymentExposure, DeploymentMode } from "@paperclipai/shared";
 import type { StorageService } from "./storage/types.js";
 import { httpLogger, errorHandler } from "./middleware/index.js";
@@ -28,6 +28,7 @@ import { dashboardRoutes } from "./routes/dashboard.js";
 import { userProfileRoutes } from "./routes/user-profiles.js";
 import { sidebarBadgeRoutes } from "./routes/sidebar-badges.js";
 import { sidebarPreferenceRoutes } from "./routes/sidebar-preferences.js";
+import { consolePreferenceRoutes } from "./routes/console-preferences.js";
 import { inboxDismissalRoutes } from "./routes/inbox-dismissals.js";
 import { instanceSettingsRoutes } from "./routes/instance-settings.js";
 import {
@@ -38,6 +39,10 @@ import { llmRoutes } from "./routes/llms.js";
 import { authRoutes } from "./routes/auth.js";
 import { assetRoutes } from "./routes/assets.js";
 import { accessRoutes } from "./routes/access.js";
+import { sprintRoutes } from "./routes/sprints.js";
+import { releaseRoutes } from "./routes/releases.js";
+import { documentRagRoutes } from "./routes/document-rag.js";
+import { projectHealthRoutes } from "./routes/project-health.js";
 import { pluginRoutes } from "./routes/plugins.js";
 import { adapterRoutes } from "./routes/adapters.js";
 import { pluginUiStaticRoutes } from "./routes/plugin-ui-static.js";
@@ -59,6 +64,10 @@ import { pluginRegistryService } from "./services/plugin-registry.js";
 import { createHostClientHandlers } from "@paperclipai/plugin-sdk";
 import type { BetterAuthSessionResult } from "./auth/better-auth.js";
 import { createCachedViteHtmlRenderer } from "./vite-html-renderer.js";
+import { workflowRoutes } from "./routes/workflow.js";
+import { createOrchestrator } from "./workflows/orchestrator.js";
+import { registerOrchestrator } from "./workflows/registry.js";
+import { heartbeatService } from "./services/heartbeat.js";
 
 type UiMode = "none" | "static" | "vite-dev";
 const FEEDBACK_EXPORT_FLUSH_INTERVAL_MS = 5_000;
@@ -126,6 +135,9 @@ export async function createApp(
     bindHost: string;
     authReady: boolean;
     companyDeletionEnabled: boolean;
+    migrationSummary?: string;
+    inspectMigrationState?: () => Promise<MigrationState>;
+    probeAuthSession?: () => Promise<void>;
     instanceId?: string;
     hostVersion?: string;
     localPluginDir?: string;
@@ -185,6 +197,9 @@ export async function createApp(
       deploymentExposure: opts.deploymentExposure,
       authReady: opts.authReady,
       companyDeletionEnabled: opts.companyDeletionEnabled,
+      migrationSummary: opts.migrationSummary,
+      inspectMigrationState: opts.inspectMigrationState,
+      probeAuthSession: opts.probeAuthSession,
     }),
   );
   api.use("/companies", companyRoutes(db, opts.storageService));
@@ -201,6 +216,10 @@ export async function createApp(
   api.use(environmentRoutes(db, { pluginWorkerManager: workerManager }));
   api.use(executionWorkspaceRoutes(db));
   api.use(goalRoutes(db));
+  api.use(sprintRoutes(db));
+  api.use(releaseRoutes(db));
+  api.use(documentRagRoutes(db));
+  api.use(projectHealthRoutes(db));
   api.use(approvalRoutes(db, { pluginWorkerManager: workerManager }));
   api.use(secretRoutes(db));
   api.use(costRoutes(db, { pluginWorkerManager: workerManager }));
@@ -209,6 +228,7 @@ export async function createApp(
   api.use(userProfileRoutes(db));
   api.use(sidebarBadgeRoutes(db));
   api.use(sidebarPreferenceRoutes(db));
+  api.use(consolePreferenceRoutes(db));
   api.use(inboxDismissalRoutes(db));
   api.use(instanceSettingsRoutes(db));
   if (opts.databaseBackupService) {
@@ -290,6 +310,13 @@ export async function createApp(
       allowedHostnames: opts.allowedHostnames,
     }),
   );
+
+  // Issue orchestration workflow
+  const heartbeat = heartbeatService(db, { pluginWorkerManager: workerManager });
+  const orchestrator = createOrchestrator(db, heartbeat);
+  registerOrchestrator(orchestrator);
+  api.use(workflowRoutes(db, orchestrator));
+
   app.use("/api", api);
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "API route not found" });
@@ -433,8 +460,11 @@ export async function createApp(
   }).catch((err) => {
     logger.error({ err }, "Failed to load ready plugins on startup");
   });
+  const stopOrchestratorScheduler = orchestrator.startScheduler();
+
   process.once("exit", () => {
     if (feedbackExportTimer) clearInterval(feedbackExportTimer);
+    stopOrchestratorScheduler();
     devWatcher?.close();
     viteHtmlRenderer?.dispose();
     hostServiceCleanup.disposeAll();

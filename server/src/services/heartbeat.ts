@@ -3,7 +3,7 @@ import path from "node:path";
 import { execFile as execFileCallback } from "node:child_process";
 import { promisify } from "node:util";
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, getTableColumns, gt, inArray, isNull, lte, notInArray, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, getTableColumns, gt, inArray, isNull, lt, lte, notInArray, or, sql } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
 import {
   AGENT_DEFAULT_MAX_CONCURRENT_RUNS,
@@ -150,6 +150,8 @@ const MANAGED_WORKSPACE_GIT_CLONE_TIMEOUT_MS = 10 * 60 * 1000;
 const MAX_INLINE_WAKE_COMMENTS = 8;
 const MAX_INLINE_WAKE_COMMENT_BODY_CHARS = 4_000;
 const MAX_INLINE_WAKE_COMMENT_BODY_TOTAL_CHARS = 12_000;
+const MIRRORED_COMMENT_WAKE_DEDUPE_MIN_WINDOW_SEC = 60;
+const MIRRORED_COMMENT_WAKE_DEDUPE_DEFAULT_WINDOW_SEC = 15 * 60;
 const execFile = promisify(execFileCallback);
 const EXECUTION_PATH_HEARTBEAT_RUN_STATUSES = ["queued", "running", "scheduled_retry"] as const;
 const CANCELLABLE_HEARTBEAT_RUN_STATUSES = ["queued", "running", "scheduled_retry"] as const;
@@ -1440,6 +1442,120 @@ function shouldQueueFollowupForRunningIssueWake(input: {
   if (input.wakeCommentId) return true;
   const wakeReason = readNonEmptyString(input.contextSnapshot?.wakeReason);
   return Boolean(wakeReason && RUNNING_ISSUE_WAKE_REASONS_REQUIRING_FOLLOWUP.has(wakeReason));
+}
+
+function normalizeCommentBodyForWakeDedupe(body: string) {
+  return body.replace(/\s+/g, " ").trim();
+}
+
+async function isMirroredDuplicateAssigneeCommentWake(
+  dbOrTx: Pick<Db, "select">,
+  input: {
+    companyId: string;
+    issueId: string;
+    commentId: string;
+    assigneeAgentId: string | null;
+    targetAgentId: string;
+    assigneeHeartbeatIntervalSec: number;
+    wakeReason: string | null;
+  },
+) {
+  if (!input.assigneeAgentId || input.assigneeAgentId !== input.targetAgentId) return false;
+  if (input.wakeReason !== "issue_commented" && input.wakeReason !== "issue_reopened_via_comment") {
+    return false;
+  }
+
+  const currentComment = await dbOrTx
+    .select({
+      id: issueComments.id,
+      createdAt: issueComments.createdAt,
+      body: issueComments.body,
+      authorAgentId: issueComments.authorAgentId,
+      authorUserId: issueComments.authorUserId,
+      createdByRunId: issueComments.createdByRunId,
+    })
+    .from(issueComments)
+    .where(
+      and(
+        eq(issueComments.companyId, input.companyId),
+        eq(issueComments.issueId, input.issueId),
+        eq(issueComments.id, input.commentId),
+      ),
+    )
+    .then((rows) => rows[0] ?? null);
+
+  // Agent-authored comments already have separate self-wake guards.
+  if (!currentComment || currentComment.authorAgentId) return false;
+
+  if (currentComment.createdByRunId) {
+    const assigneeRun = await dbOrTx
+      .select({ id: heartbeatRuns.id })
+      .from(heartbeatRuns)
+      .where(
+        and(
+          eq(heartbeatRuns.id, currentComment.createdByRunId),
+          eq(heartbeatRuns.companyId, input.companyId),
+          eq(heartbeatRuns.agentId, input.assigneeAgentId),
+          or(
+            sql`${heartbeatRuns.contextSnapshot} ->> 'issueId' = ${input.issueId}`,
+            sql`${heartbeatRuns.contextSnapshot} ->> 'taskId' = ${input.issueId}`,
+          ),
+        ),
+      )
+      .limit(1)
+      .then((rows) => rows[0] ?? null);
+    if (assigneeRun) return true;
+  }
+
+  const previousComment = await dbOrTx
+    .select({
+      id: issueComments.id,
+      createdAt: issueComments.createdAt,
+      body: issueComments.body,
+      authorAgentId: issueComments.authorAgentId,
+      authorUserId: issueComments.authorUserId,
+    })
+    .from(issueComments)
+    .where(
+      and(
+        eq(issueComments.companyId, input.companyId),
+        eq(issueComments.issueId, input.issueId),
+        or(
+          lt(issueComments.createdAt, currentComment.createdAt),
+          and(
+            eq(issueComments.createdAt, currentComment.createdAt),
+            sql`${issueComments.id} <> ${currentComment.id}`,
+          ),
+        )!,
+      ),
+    )
+    .orderBy(desc(issueComments.createdAt), desc(issueComments.id))
+    .limit(1)
+    .then((rows) => rows[0] ?? null);
+
+  if (!previousComment) return false;
+
+  const sameUserAuthor =
+    Boolean(currentComment.authorUserId) &&
+    Boolean(previousComment.authorUserId) &&
+    currentComment.authorUserId === previousComment.authorUserId;
+  const mirrorsAssignee = previousComment.authorAgentId === input.assigneeAgentId;
+
+  if (!sameUserAuthor && !mirrorsAssignee) return false;
+
+  const currentBody = normalizeCommentBodyForWakeDedupe(currentComment.body);
+  const previousBody = normalizeCommentBodyForWakeDedupe(previousComment.body);
+  if (!currentBody || currentBody !== previousBody) return false;
+  if (mirrorsAssignee) return true;
+
+  const dedupeWindowSec = Math.max(
+    MIRRORED_COMMENT_WAKE_DEDUPE_MIN_WINDOW_SEC,
+    Number.isFinite(input.assigneeHeartbeatIntervalSec) && input.assigneeHeartbeatIntervalSec > 0
+      ? Math.floor(input.assigneeHeartbeatIntervalSec)
+      : MIRRORED_COMMENT_WAKE_DEDUPE_DEFAULT_WINDOW_SEC,
+  );
+  const deltaMs = currentComment.createdAt.getTime() - previousComment.createdAt.getTime();
+  return deltaMs >= 0 && deltaMs <= dedupeWindowSec * 1000;
 }
 
 function isCheckoutConflictError(error: unknown): boolean {
@@ -6037,17 +6153,34 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
             interaction: true,
           };
         }
-        const deferredCommentIds = extractWakeCommentIds(deferredContextSeed);
         const deferredWakeReason = readNonEmptyString(deferredContextSeed.wakeReason);
+        const deferredWakeCommentId = deriveCommentId(deferredContextSeed, deferredPayload);
+        const deferredCommentIds = mergeWakeCommentIds(
+          extractWakeCommentIds(deferredContextSeed),
+          deferredWakeCommentId,
+        );
+        const deferredCommentWakeCanReopenClosedIssue =
+          deferredWakeReason === "issue_reopened_via_comment" ||
+          (deferredWakeReason === "issue_commented" && deferred.requestedByActorType === "user");
+        const mirroredDeferredAssigneeCommentWake =
+          deferredWakeReason === "issue_commented" &&
+          Boolean(deferredWakeCommentId) &&
+          await isMirroredDuplicateAssigneeCommentWake(tx, {
+            companyId: issue.companyId,
+            issueId: issue.id,
+            commentId: deferredWakeCommentId!,
+            assigneeAgentId: issue.assigneeAgentId,
+            targetAgentId: deferred.agentId,
+            assigneeHeartbeatIntervalSec: MIRRORED_COMMENT_WAKE_DEDUPE_DEFAULT_WINDOW_SEC,
+            wakeReason: deferredWakeReason,
+          });
         // Only human/comment-reopen interactions should revive completed issues;
         // system follow-ups such as retry or cleanup wakes must not reopen closed work.
         const shouldReopenDeferredCommentWake =
           deferredCommentIds.length > 0 &&
           (issue.status === "done" || issue.status === "cancelled") &&
-          (
-            deferred.requestedByActorType === "user" ||
-            deferredWakeReason === "issue_reopened_via_comment"
-          );
+          deferredCommentWakeCanReopenClosedIssue &&
+          !mirroredDeferredAssigneeCommentWake;
         let reopenedActivity: LogActivityInput | null = null;
 
         if (shouldReopenDeferredCommentWake) {
@@ -6495,6 +6628,35 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
             source,
             triggerDetail,
             reason: "issue_execution_issue_not_found",
+            payload,
+            status: "skipped",
+            requestedByActorType: opts.requestedByActorType ?? null,
+            requestedByActorId: opts.requestedByActorId ?? null,
+            idempotencyKey: opts.idempotencyKey ?? null,
+            finishedAt: new Date(),
+          });
+          return { kind: "skipped" as const };
+        }
+
+        const wakeReason = readNonEmptyString(enrichedContextSnapshot.wakeReason) ?? reason;
+        if (
+          wakeCommentId &&
+          await isMirroredDuplicateAssigneeCommentWake(tx, {
+            companyId: issue.companyId,
+            issueId: issue.id,
+            commentId: wakeCommentId,
+            assigneeAgentId: issue.assigneeAgentId,
+            targetAgentId: agentId,
+            assigneeHeartbeatIntervalSec: policy.intervalSec,
+            wakeReason,
+          })
+        ) {
+          await tx.insert(agentWakeupRequests).values({
+            companyId: agent.companyId,
+            agentId,
+            source,
+            triggerDetail,
+            reason: "issue_commented.mirrored_duplicate",
             payload,
             status: "skipped",
             requestedByActorType: opts.requestedByActorType ?? null,
